@@ -60,23 +60,24 @@ Dialog::~Dialog() {
 void Dialog::checkSpelling() {
   QString language = QStringLiteral("en_US");
 
-  auto dirs = std::vector<std::filesystem::path>();
-  nuspell::append_default_dir_paths(dirs);
+  auto searchdirs = std::vector<std::filesystem::path>();
+  nuspell::append_default_dir_paths(searchdirs);
   auto dict_list = nuspell::search_default_dirs_for_dicts();
 
   // Add application folder to search folder for dictionaries
   std::filesystem::path app_path(
         QString(qApp->applicationDirPath() + "/dicts/").toStdU16String());
-  auto dirs2 = std::vector<std::filesystem::path>();
-  dirs2.push_back(app_path);
-  nuspell::search_dirs_for_dicts(dirs2, dict_list);
+  auto appdirs = std::vector<std::filesystem::path>();
+  appdirs.push_back(app_path);
+  nuspell::search_dirs_for_dicts(appdirs, dict_list);
+  searchdirs.push_back(app_path);
 
   qDebug() << "Found dictionaries:";
   for (auto s : dict_list) {
     qDebug() << QString::fromUtf16(s.u16string().c_str());
   }
 
-  auto dict_path = nuspell::search_dirs_for_one_dict(dirs,
+  auto dict_path = nuspell::search_dirs_for_one_dict(searchdirs,
                                                      language.toStdString());
   if (std::empty(dict_path)) {
     qWarning() << "Can not find the requested dictionary.";
