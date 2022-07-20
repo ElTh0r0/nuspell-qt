@@ -38,14 +38,12 @@
 
 NuspellCheck::NuspellCheck(nuspell::Dictionary *p_Dict,
                            const QString &sUserDictionary)
-  : m_pDict(p_Dict),
-    m_sUserDictionary(sUserDictionary) {
+    : m_pDict(p_Dict), m_sUserDictionary(sUserDictionary) {
   QFile userDictonaryFile(m_sUserDictionary);
   if (!m_sUserDictionary.isEmpty() && userDictonaryFile.exists()) {
     if (userDictonaryFile.open(QIODevice::ReadOnly)) {
       QTextStream stream(&userDictonaryFile);
-      for (QString word = stream.readLine();
-           !word.isEmpty();
+      for (QString word = stream.readLine(); !word.isEmpty();
            word = stream.readLine())
         put_word(word);
       userDictonaryFile.close();
@@ -58,10 +56,7 @@ NuspellCheck::NuspellCheck(nuspell::Dictionary *p_Dict,
   }
 }
 
-
-NuspellCheck::~NuspellCheck() {
-}
-
+NuspellCheck::~NuspellCheck() {}
 
 auto NuspellCheck::spell(const QString &sWord) -> bool {
   if (!m_UserWordsList.contains(sWord)) {
@@ -70,31 +65,21 @@ auto NuspellCheck::spell(const QString &sWord) -> bool {
   return true;
 }
 
-
 auto NuspellCheck::suggest(const QString &sWord) -> QStringList {
   auto sugs = std::vector<std::string>();
   m_pDict->suggest(sWord.toStdString(), sugs);
 
   QStringList suggestions;
   std::transform(
-        sugs.begin(), sugs.end(), std::back_inserter(suggestions),
-        [](const std::string &v){
-    return QString::fromStdString(v);
-  });
+      sugs.begin(), sugs.end(), std::back_inserter(suggestions),
+      [](const std::string &v) { return QString::fromStdString(v); });
 
   return suggestions;
 }
 
+void NuspellCheck::ignoreWord(const QString &sWord) { put_word(sWord); }
 
-void NuspellCheck::ignoreWord(const QString &sWord) {
-  put_word(sWord);
-}
-
-
-void NuspellCheck::put_word(const QString &sWord) {
-  m_UserWordsList << sWord;
-}
-
+void NuspellCheck::put_word(const QString &sWord) { m_UserWordsList << sWord; }
 
 void NuspellCheck::addToUserWordlist(const QString &sWord) {
   put_word(sWord);

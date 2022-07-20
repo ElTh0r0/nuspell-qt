@@ -35,27 +35,20 @@
 
 #include <QDebug>
 #include <QMessageBox>
-
 #include <nuspell/dictionary.hxx>
 #include <nuspell/finder.hxx>
 
-#include "ui_dialog.h"
 #include "./nuspellcheck.h"
 #include "./nuspellcheckdialog.h"
+#include "ui_dialog.h"
 
-Dialog::Dialog(QWidget *pParent)
-  : QDialog(pParent),
-    ui(new Ui::Dialog) {
+Dialog::Dialog(QWidget *pParent) : QDialog(pParent), ui(new Ui::Dialog) {
   ui->setupUi(this);
-  connect(ui->buttonCheckSpelling, &QPushButton::clicked,
-          this, &Dialog::checkSpelling);
+  connect(ui->buttonCheckSpelling, &QPushButton::clicked, this,
+          &Dialog::checkSpelling);
 }
 
-
-Dialog::~Dialog() {
-  delete ui;
-}
-
+Dialog::~Dialog() { delete ui; }
 
 void Dialog::checkSpelling() {
   QString language = QStringLiteral("en_US");
@@ -66,7 +59,7 @@ void Dialog::checkSpelling() {
 
   // Add application folder to search folder for dictionaries
   std::filesystem::path app_path(
-        QString(qApp->applicationDirPath() + "/dicts/").toStdU16String());
+      QString(qApp->applicationDirPath() + "/dicts/").toStdU16String());
   auto appdirs = std::vector<std::filesystem::path>();
   appdirs.push_back(app_path);
   nuspell::search_dirs_for_dicts(appdirs, dict_list);
@@ -77,8 +70,8 @@ void Dialog::checkSpelling() {
     qDebug() << QString::fromUtf16(s.u16string().c_str());
   }
 
-  auto dict_path = nuspell::search_dirs_for_one_dict(searchdirs,
-                                                     language.toStdString());
+  auto dict_path =
+      nuspell::search_dirs_for_one_dict(searchdirs, language.toStdString());
   if (std::empty(dict_path)) {
     qWarning() << "Can not find the requested dictionary.";
     QMessageBox::warning(this, tr("Warning"),
@@ -89,8 +82,7 @@ void Dialog::checkSpelling() {
   auto dict = nuspell::Dictionary();
   try {
     dict.load_aff_dic(dict_path);
-  }
-  catch (const nuspell::Dictionary_Loading_Error& e) {
+  } catch (const nuspell::Dictionary_Loading_Error &e) {
     qWarning() << e.what() << '\n';
     QMessageBox::warning(this, tr("Warning"), QString::fromLatin1(e.what()));
     return;
@@ -126,8 +118,7 @@ void Dialog::checkSpelling() {
 
     // Workaround for better recognition of words
     // punctuation etc. does not belong to words
-    while (!word.isEmpty() &&
-           !word.at(0).isLetter() &&
+    while (!word.isEmpty() && !word.at(0).isLetter() &&
            cursor.anchor() < cursor.position()) {
       int cursorPos = cursor.position();
       cursor.setPosition(cursor.anchor() + 1, QTextCursor::MoveAnchor);
@@ -159,19 +150,18 @@ void Dialog::checkSpelling() {
       ui->textEdit->setExtraSelections(esList);
       QCoreApplication::processEvents();
 
-      if (spellResult == NuspellCheckDialog::AbortCheck)
-        break;
+      if (spellResult == NuspellCheckDialog::AbortCheck) break;
 
       switch (spellResult) {
-      case NuspellCheckDialog::ReplaceOnce:
-        cursor.insertText(checkDialog->replacement());
-        break;
-      case NuspellCheckDialog::ReplaceAll:
-        replaceAll(cursor.position(), word, checkDialog->replacement());
-        break;
+        case NuspellCheckDialog::ReplaceOnce:
+          cursor.insertText(checkDialog->replacement());
+          break;
+        case NuspellCheckDialog::ReplaceAll:
+          replaceAll(cursor.position(), word, checkDialog->replacement());
+          break;
 
-      default:
-        break;
+        default:
+          break;
       }
       QCoreApplication::processEvents();
     }
@@ -187,10 +177,9 @@ void Dialog::checkSpelling() {
                            tr("The spell check has finished."));
 }
 
-
 void Dialog::replaceAll(int nPos, const QString &sOld, const QString &sNew) {
   QTextCursor cursor(ui->textEdit->document());
-  cursor.setPosition(nPos-sOld.length(), QTextCursor::MoveAnchor);
+  cursor.setPosition(nPos - sOld.length(), QTextCursor::MoveAnchor);
 
   while (!cursor.atEnd()) {
     QCoreApplication::processEvents();
@@ -199,8 +188,7 @@ void Dialog::replaceAll(int nPos, const QString &sOld, const QString &sNew) {
 
     // Workaround for better recognition of words
     // punctuation etc. does not belong to words
-    while (!word.isEmpty() &&
-           !word.at(0).isLetter() &&
+    while (!word.isEmpty() && !word.at(0).isLetter() &&
            cursor.anchor() < cursor.position()) {
       int cursorPos = cursor.position();
       cursor.setPosition(cursor.anchor() + 1, QTextCursor::MoveAnchor);

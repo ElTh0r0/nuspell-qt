@@ -36,7 +36,6 @@
 
 #include <QString>
 #include <QStringList>
-
 #include <nuspell/dictionary.hxx>
 
 class NuspellCheck {

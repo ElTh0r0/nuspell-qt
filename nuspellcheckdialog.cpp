@@ -32,39 +32,34 @@
  */
 
 #include "./nuspellcheckdialog.h"
-#include "ui_nuspellcheckdialog.h"
 
 #include "./nuspellcheck.h"
+#include "ui_nuspellcheckdialog.h"
 
 NuspellCheckDialog::NuspellCheckDialog(NuspellCheck *pSpellChecker,
                                        QWidget *pParent)
-  : QDialog(pParent),
-    ui(new Ui::NuspellCheckDialog) {
+    : QDialog(pParent), ui(new Ui::NuspellCheckDialog) {
   ui->setupUi(this);
   m_pSpellChecker = pSpellChecker;
 
-  connect(ui->listWidget, &QListWidget::currentTextChanged,
-          ui->ledtReplaceWith, &QLineEdit::setText);
+  connect(ui->listWidget, &QListWidget::currentTextChanged, ui->ledtReplaceWith,
+          &QLineEdit::setText);
 
-  connect(ui->btnAddToDict, &QPushButton::clicked,
-          this, &NuspellCheckDialog::addToDict);
-  connect(ui->btnReplaceOnce, &QPushButton::clicked,
-          this, &NuspellCheckDialog::replaceOnce);
-  connect(ui->btnReplaceAll, &QPushButton::clicked,
-          this, &NuspellCheckDialog::replaceAll);
-  connect(ui->btnIgnoreOnce, &QPushButton::clicked,
-          this, &NuspellCheckDialog::ignoreOnce);
-  connect(ui->btnIgnoreAll, &QPushButton::clicked,
-          this, &NuspellCheckDialog::ignoreAll);
-  connect(ui->btnCancel, &QPushButton::clicked,
-          this, &NuspellCheckDialog::reject);
+  connect(ui->btnAddToDict, &QPushButton::clicked, this,
+          &NuspellCheckDialog::addToDict);
+  connect(ui->btnReplaceOnce, &QPushButton::clicked, this,
+          &NuspellCheckDialog::replaceOnce);
+  connect(ui->btnReplaceAll, &QPushButton::clicked, this,
+          &NuspellCheckDialog::replaceAll);
+  connect(ui->btnIgnoreOnce, &QPushButton::clicked, this,
+          &NuspellCheckDialog::ignoreOnce);
+  connect(ui->btnIgnoreAll, &QPushButton::clicked, this,
+          &NuspellCheckDialog::ignoreAll);
+  connect(ui->btnCancel, &QPushButton::clicked, this,
+          &NuspellCheckDialog::reject);
 }
 
-
-NuspellCheckDialog::~NuspellCheckDialog() {
-  delete ui;
-}
-
+NuspellCheckDialog::~NuspellCheckDialog() { delete ui; }
 
 NuspellCheckDialog::SpellCheckAction NuspellCheckDialog::checkWord(
     const QString &sWord) {
@@ -85,17 +80,14 @@ NuspellCheckDialog::SpellCheckAction NuspellCheckDialog::checkWord(
   return m_ReturnCode;
 }
 
-
 QString NuspellCheckDialog::replacement() const {
   return ui->ledtReplaceWith->text();
 }
-
 
 void NuspellCheckDialog::ignoreOnce() {
   m_ReturnCode = IgnoreOnce;
   accept();
 }
-
 
 void NuspellCheckDialog::ignoreAll() {
   m_pSpellChecker->ignoreWord(m_sUnkownWord);
@@ -103,18 +95,15 @@ void NuspellCheckDialog::ignoreAll() {
   accept();
 }
 
-
 void NuspellCheckDialog::replaceOnce() {
   m_ReturnCode = ReplaceOnce;
   accept();
 }
 
-
 void NuspellCheckDialog::replaceAll() {
   m_ReturnCode = ReplaceAll;
   accept();
 }
-
 
 void NuspellCheckDialog::addToDict() {
   m_pSpellChecker->addToUserWordlist(m_sUnkownWord);

@@ -46,8 +46,14 @@ class NuspellCheckDialog : public QDialog {
   Q_OBJECT
 
  public:
-  enum SpellCheckAction {AbortCheck, IgnoreOnce, IgnoreAll,
-                         ReplaceOnce, ReplaceAll, AddToDict};
+  enum SpellCheckAction {
+    AbortCheck,
+    IgnoreOnce,
+    IgnoreAll,
+    ReplaceOnce,
+    ReplaceAll,
+    AddToDict
+  };
 
   explicit NuspellCheckDialog(NuspellCheck *pSpellChecker,
                               QWidget *pParent = 0);
