@@ -4,7 +4,7 @@
  * \section LICENSE
  *
  * Original code Copyright (c) 2011, Volker Götz
- * Modified code Copyright (c) 2020-2022, Thorsten Roth
+ * Modified code Copyright (c) 2020-present, Thorsten Roth
  * All rights reserved.
  *
  * This file is part of nuspell-qt.
