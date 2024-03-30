@@ -66,7 +66,7 @@ void Dialog::checkSpelling() {
   searchdirs.push_back(app_path);
 
   qDebug() << "Found dictionaries:";
-  for (auto s : dict_list) {
+  for (const auto &s : dict_list) {
     qDebug() << QString::fromUtf16(s.u16string().c_str());
   }
 
