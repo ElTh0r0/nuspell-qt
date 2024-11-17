@@ -1,24 +1,30 @@
-TEMPLATE = app
+TEMPLATE   = app
 
-TARGET   = nuspellchecker-qt
+TARGET     = nuspellchecker-qt
 
-QT      += core gui widgets
-CONFIG  += c++17
+QT        += core gui widgets
+CONFIG    += c++17
+DEFINES   += QT_NO_FOREACH
 
-SOURCES += main.cpp \
-           dialog.cpp \
-           nuspellcheck.cpp \
-           nuspellcheckdialog.cpp
+CONFIG(debug, debug|release) {
+  CONFIG  += warn_on
+  DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060800
+}
 
-HEADERS += dialog.h \
-           nuspellcheck.h \
-           nuspellcheckdialog.h
+SOURCES   += main.cpp \
+             dialog.cpp \
+             nuspellcheck.cpp \
+             nuspellcheckdialog.cpp
 
-FORMS   += dialog.ui \
-           nuspellcheckdialog.ui
+HEADERS   += dialog.h \
+             nuspellcheck.h \
+             nuspellcheckdialog.h
+
+FORMS     += dialog.ui \
+             nuspellcheckdialog.ui
 
 unix {
-   LIBS += -lnuspell -licuuc -licudata
+   LIBS   += -lnuspell -licuuc -licudata
 }
 
 win32 {
